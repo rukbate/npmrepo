@@ -1,22 +1,22 @@
 import * as vscode from 'vscode';
 
-export function activate(context: vscode.ExtensionContext) {
-	let slice = (str: string, len: number) => {
+function slice(text: string, len: number) {		
+	let res = new Array();
+
+	text.split('\n').forEach(str => {
 		let pos = 0;
-		let res = [];
 		while(pos < str.length) {
-			if(pos + len < str.length) {
-				res.push(str.slice(pos, pos + len));
-			} else {
-				res.push(str.slice(pos));
-			}
+			res.push(str.slice(pos, Math.min(str.length, pos + len)));
 
 			pos += len;
 		}
-		return res;
-	};
+	});
+	
+	return res;
+};
 
-	let disposable = vscode.commands.registerCommand('texttools.wrapToLength', async () => {
+function doWrap(selected: boolean) {
+	return async () => {
 		let lenStr = await vscode.window.showInputBox({
 			prompt: 'Length per line',
 			value: '80'
@@ -32,20 +32,32 @@ export function activate(context: vscode.ExtensionContext) {
 
         if (editor) {
             const document = editor.document;
-			//const selection = editor.selection;
-			let invalidRange = new vscode.Range(0, 0, document.lineCount, 0);
-			let fullRange = document.validateRange(invalidRange);
-			
-			const word = document.getText();
+			let region: vscode.Range | vscode.Selection;
+			let word;
+
+			if(selected) {
+				region = editor.selection;
+				word = document.getText(region);
+			} else {
+				let invalidRange = new vscode.Range(0, 0, document.lineCount, 0);
+				region = document.validateRange(invalidRange);
+				word = document.getText();
+			}
+						
 			const wrapped = slice(word, len).join('\n');
 			editor.edit(editBuilder => {
-				editBuilder.replace(fullRange, wrapped);
+				editBuilder.replace(region, wrapped);
 			}); 
         }
-	});
-
-	context.subscriptions.push(disposable);
+	};
 }
 
-// this method is called when your extension is deactivated
+export function activate(context: vscode.ExtensionContext) {
+	let disposable1 = vscode.commands.registerCommand('texttools.wrapDocumentByLength', doWrap(false));
+	let disposable2 = vscode.commands.registerCommand('texttools.wrapSelectionByLength', doWrap(true));
+
+	context.subscriptions.push(disposable1);
+	context.subscriptions.push(disposable2);
+}
+
 export function deactivate() {}

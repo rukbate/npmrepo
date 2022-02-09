@@ -2,7 +2,7 @@
   "name": "texttools",
 	"displayName": "Text Tools",
 	"description": "Handy text tools",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"publisher": "rukbate",
   	"author": {
     	"name": "Zhang Lin"
@@ -15,14 +15,19 @@
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:texttools.wrapToLength"
+        "onCommand:texttools.wrapDocumentByLength",
+		"onCommand:texttools.wrapSelectionByLength"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "texttools.wrapToLength",
-				"title": "Text tools: Wrap to length"
+				"command": "texttools.wrapDocumentByLength",
+				"title": "Text tools: Wrap document by length"
+			},
+			{
+				"command": "texttools.wrapSelectionByLength",
+				"title": "Text tools: Wrap selected text by length"
 			}
 		]
 	},

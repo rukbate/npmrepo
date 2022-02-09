@@ -4,4 +4,5 @@ Handy tools to manipulate text
 
 ## Features
 
-* **Wrap line to fixed length** - Add hard wraps to the document per given length
+* **Wrap whole document by length** - Hard wrap document by given length
+* **Wrap selected text by length** - Hard wrap selected text by given length
