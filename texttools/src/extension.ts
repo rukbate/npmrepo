@@ -17,9 +17,11 @@ function slice(text: string, len: number) {
 
 function doWrap(selected: boolean) {
 	return async () => {
+		const cfgLen: string = vscode.workspace.getConfiguration("editor").get('wordWrapColumn') || '80';
+
 		let lenStr = await vscode.window.showInputBox({
 			prompt: 'Length per line',
-			value: '80'
+			value: cfgLen
 		});
 
 		let len = Number(lenStr);
